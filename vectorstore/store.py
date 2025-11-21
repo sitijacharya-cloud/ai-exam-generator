@@ -66,6 +66,31 @@ class VectorStore:
             return self.vectorstore._collection.count()
         return 0
     
+    # def get_statistics(self) -> dict:
+    #     """Get vectorstore statistics"""
+    #     if not self.vectorstore:
+    #         return {}
+        
+    #     collection = self.vectorstore._collection
+    #     count = collection.count()
+        
+    #     stats = {
+    #         "total_vectors": count,
+    #         "collection_name": self.collection_name,  # Fixed: use self.collection_name
+    #         "persist_directory": str(self.persist_directory)
+    #     }
+        
+    #     # Get sample embedding dimensions
+    #     if count > 0:
+    #         try:
+    #             sample = collection.get(limit=1, include=["embeddings"])
+    #             # Fixed: properly check if embeddings exist and have content
+    #             if sample and "embeddings" in sample and sample["embeddings"] and len(sample["embeddings"]) > 0:
+    #                 stats["embedding_dimensions"] = len(sample["embeddings"][0])
+    #         except Exception as e:
+    #             logger.warning(f"Could not get embedding dimensions: {e}")
+        
+    #     return stats
     def get_statistics(self) -> dict:
         """Get vectorstore statistics"""
         if not self.vectorstore:
@@ -76,7 +101,7 @@ class VectorStore:
         
         stats = {
             "total_vectors": count,
-            "collection_name": self.collection_name,  # Fixed: use self.collection_name
+            "collection_name": self.collection_name,
             "persist_directory": str(self.persist_directory)
         }
         
@@ -84,14 +109,17 @@ class VectorStore:
         if count > 0:
             try:
                 sample = collection.get(limit=1, include=["embeddings"])
-                # Fixed: properly check if embeddings exist and have content
-                if sample and "embeddings" in sample and sample["embeddings"] and len(sample["embeddings"]) > 0:
+                # ✅ Fixed: properly check embeddings without triggering NumPy ambiguity
+                if (sample and 
+                    "embeddings" in sample and 
+                    sample["embeddings"] is not None and 
+                    len(sample["embeddings"]) > 0 and
+                    len(sample["embeddings"][0]) > 0):
                     stats["embedding_dimensions"] = len(sample["embeddings"][0])
             except Exception as e:
                 logger.warning(f"Could not get embedding dimensions: {e}")
         
         return stats
-    
     def similarity_search(self, query: str, k: int = 3):
         """Perform similarity search"""
         if not self.vectorstore:

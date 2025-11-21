@@ -9,3 +9,4 @@ pypdf
 pydantic
 python-dotenv
 
+sentence-transformers
