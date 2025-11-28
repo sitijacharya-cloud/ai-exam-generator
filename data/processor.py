@@ -1,4 +1,3 @@
-"""Document processing and chunking"""
 
 from typing import List
 from langchain.text_splitter import RecursiveCharacterTextSplitter

@@ -1,8 +1,3 @@
-"""
-One-time script to setup knowledge base
-Run this first to process PDFs and create vectorstore
-FIXED: Format error with embedding dimensions
-"""
 
 import sys
 from pathlib import Path

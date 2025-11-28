@@ -138,16 +138,16 @@ def calculate_weighted_distribution(topics_with_weights: List[Tuple[str, float]]
     return distribution
 
 def main():
-    st.title("🎓 AI Exam Creator - Production RAG System")
+    st.title(" AI Exam Creator - RAG System")
     
     st.markdown("""
     ### How it works:
-    1. 📚 **Knowledge Base**: PDFs are pre-processed and stored in ChromaDB
-    2. 📋 **Syllabus Input**: Provide topics with credit hours (optional)
-    3. ⚖️ **Weighted Distribution**: Questions distributed by credit hours
-    4. 🔍 **Smart Retrieval**: Finds relevant contexts when available
-    5. 🤖 **Flexible Generation**: Uses context OR generates from topic knowledge
-    6. 📊 **Advanced Evaluation**: RAGAS metrics to assess exam quality
+    1.  **Knowledge Base**: PDFs are pre-processed and stored in ChromaDB
+    2.  **Syllabus Input**: Provide topics with credit hours (optional)
+    3.  **Weighted Distribution**: Questions distributed by credit hours
+    4.  **Smart Retrieval**: Finds relevant contexts when available
+    5.  **Flexible Generation**: Uses context OR generates from topic knowledge
+    6.  **Advanced Evaluation**: RAGAS metrics to assess exam quality
     """)
     
     # Initialize system

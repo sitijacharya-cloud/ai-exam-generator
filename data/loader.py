@@ -1,4 +1,3 @@
-"""PDF loading functionality"""
 
 from pathlib import Path
 from typing import List

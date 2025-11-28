@@ -1,9 +1,4 @@
-"""
-Complete RAG Evaluation Framework for AI Exam Generator
-Implements multiple evaluation techniques to assess system quality
 
-Place this file in: evaluation/rag_evaluator.py
-"""
 
 import sys
 from pathlib import Path
@@ -23,23 +18,14 @@ logger = logging.getLogger(__name__)
 
 
 class RAGEvaluator:
-    """
-    Comprehensive RAG evaluation for exam generation system
-    
-    Evaluation Dimensions:
-    1. Retrieval Quality - How good is context retrieval?
-    2. Generation Quality - How good are generated questions?
-    3. End-to-End Quality - Overall RAG pipeline performance
-    4. Educational Quality - Are questions pedagogically sound?
-    """
     
     def __init__(self):
         self.client = openai.OpenAI(api_key=OPENAI_API_KEY)
         self.model = LLM_MODEL
     
-    # ========================================================================
+    
     # 1. RETRIEVAL QUALITY METRICS
-    # ========================================================================
+  
     
     def evaluate_context_relevance(self, query: str, contexts: List[RetrievedContext]) -> Dict:
         """
@@ -448,66 +434,7 @@ Respond with JSON:
             }
         }
     
-    # ========================================================================
-    # 4. EDUCATIONAL QUALITY METRICS
-    # ========================================================================
     
-    def evaluate_bloom_taxonomy_level(self, question: Question) -> Dict:
-        """
-        Metric: Bloom's Taxonomy Alignment
-        Question: What cognitive level does this question test?
-        
-        Levels: Remember, Understand, Apply, Analyze, Evaluate, Create
-        """
-        prompt = f"""Analyze this exam question using Bloom's Taxonomy.
-
-Question: {question.prompt}
-Stated Difficulty: {question.difficulty}
-
-What cognitive level does this question test?
-- Remember: Recall facts
-- Understand: Explain concepts
-- Apply: Use knowledge in new situations
-- Analyze: Break down information
-- Evaluate: Make judgments
-- Create: Produce new work
-
-Respond with JSON:
-{{
-    "bloom_level": "remember/understand/apply/analyze/evaluate/create",
-    "matches_difficulty": true/false,
-    "explanation": "brief explanation"
-}}"""
-
-        try:
-            response = self.client.chat.completions.create(
-                model=self.model,
-                messages=[{"role": "user", "content": prompt}],
-                temperature=0.1,
-                response_format={"type": "json_object"}
-            )
-            result = json.loads(response.choices[0].message.content)
-            
-            bloom_levels = {
-                "remember": 1, "understand": 2, "apply": 3,
-                "analyze": 4, "evaluate": 5, "create": 6
-            }
-            level = result.get("bloom_level", "understand")
-            
-            return {
-                "metric": "bloom_taxonomy",
-                "bloom_level": level,
-                "cognitive_complexity": bloom_levels.get(level, 2),
-                "matches_difficulty": result.get("matches_difficulty", True),
-                "explanation": result.get("explanation", "")
-            }
-        except Exception as e:
-            logger.error(f"Bloom taxonomy evaluation failed: {e}")
-            return {
-                "metric": "bloom_taxonomy",
-                "bloom_level": "unknown",
-                "status": "error"
-            }
     
     def evaluate_question_clarity(self, question: Question) -> Dict:
         """
@@ -641,29 +568,7 @@ Respond with JSON:
             "recommendations": self._generate_recommendations(summary, source_diversity)
         }
     
-    def _generate_recommendations(self, summary: Dict, source_diversity: Dict) -> List[str]:
-        """Generate actionable recommendations based on evaluation"""
-        recommendations = []
-        
-        if summary["overall_ragas_score"] < 0.7:
-            recommendations.append("⚠️ Overall quality is below target. Review generation prompts.")
-        
-        if summary["avg_faithfulness"] < 0.7:
-            recommendations.append("⚠️ Faithfulness is low. Questions may be hallucinating facts not in context.")
-        
-        if summary["context_usage_rate"] < 0.3:
-            recommendations.append("💡 Low context usage. Consider lowering relevance threshold or adding more diverse textbooks.")
-        
-        if source_diversity["score"] < 0.5:
-            recommendations.append("💡 Low source diversity. Questions are coming from limited sources.")
-        
-        if summary["score_distribution"]["poor (<0.6)"] > len(summary["score_distribution"]) * 0.2:
-            recommendations.append("⚠️ More than 20% of questions are poor quality. Manual review recommended.")
-        
-        if not recommendations:
-            recommendations.append("✅ Exam quality is good! No major issues detected.")
-        
-        return recommendations
+  
     
     # ========================================================================
     # 6. EXPORT AND REPORTING
@@ -691,9 +596,7 @@ Respond with JSON:
 # ========================================================================
 
 if __name__ == "__main__":
-    """
-    Example usage of RAG Evaluator
-    """
+    
     
     # Initialize evaluator
     evaluator = RAGEvaluator()
@@ -703,10 +606,6 @@ if __name__ == "__main__":
     # ragas_score = evaluator.calculate_ragas_metrics(question)
     # print(f"RAGAS Score: {ragas_score['ragas_score']:.2f} ({ragas_score['grade']})")
     
-    # Example: Evaluate batch
-    # questions = [...]  # Your list of questions
-    # batch_results = evaluator.evaluate_exam_batch(questions)
-    # print(f"Overall Score: {batch_results['summary']['overall_ragas_score']:.2f}")
     
     print("RAG Evaluator initialized successfully!")
     print("Import this module to use in your exam generator.")
